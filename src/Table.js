@@ -3,6 +3,13 @@ import 'react-table/react-table.css';
 import React, { Component } from 'react';
 import R from 'ramda';
 
+function *genId() {
+    let id = 1;
+    while(1) {
+        yield id++;
+    }
+}
+
 class Table extends Component {
     constructor(props) {
         super(props);
@@ -20,11 +27,16 @@ class Table extends Component {
     getData(limit=4) {
         fetch(`http://localhost:3000/?limit=${limit}`)
             .then(res => res.json())
-            .then(players => this.setState({ players }));
+            .then(players => this.setState({players}));
     }
 
     render() {
+        const getId = genId();
         const columns = [{
+            Header: '#',
+            id: 'id',
+            accessor: p => getId.next().value
+        }, {
             Header: 'Name',
             id: 'name',
             accessor: p => `${p.lastName} ${p.firstName}`,
@@ -43,7 +55,7 @@ class Table extends Component {
             id: 'birth',
             aggregate: birthdays => new Date(R.mean(birthdays.map(b => new Date(b).getTime()))).toDateString(),
             accessor: p => new Date(p.dob).toDateString(),
-            sortMethod: (a, b) => new Date(a).getTime() < new Date(b).getTime() ? 1 : -1
+            sortMethod: (a, b) => new Date(a).getTime() < new Date(b).getTime() ? -1 : 1
 
         }, {
             Header: 'Federation',
@@ -59,9 +71,11 @@ class Table extends Component {
                     onChange={e => this.getData(+e.target.value)}
                 />
                 <ReactTable
-                    pivotBy={['fed']}
+                    //pivotBy={['fed']}
+                    className="-striped"
                     data={this.state.players}
                     columns={columns}
+                    collapseOnSortingChange={false}
                     // defaultSortMethod={(...args) => {
                     //     console.log(args)
                     // }}
