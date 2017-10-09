@@ -77,14 +77,15 @@ app.get('/average-age', (req, res) => {
   query.exec((err, players) => {
     if (err) res.send(err);
     else {
-      // res.send(players.map(p => [ mapping[p._id], p.rating ]));
-      res.send(players.map(findAverage));
+        // res.send(players)
+        // res.send(players.map(p => [ mapping[p._id], p.rating ]))
+        //
+        res.send(players.map(findAverage).sort((a, b) => a[1] < b[1] ? 1 : -1));
     }
   });
 });
 
 app.get('/', (req, res) => {
-  console.log(+req.query.limit)
   const query = Player.find({}, { _id: 0 }).limit(+req.query.limit);
   query.exec(query, (err, result) => {
     res.send(result.map(
@@ -106,22 +107,37 @@ app.get('/count', (req, res) => {
     });
 });
 
+
+app.get('/age', (req, res) => {
+    const query = Player.aggregate([
+        { $group: { _id: '$fed', total: { $sum: 1 } } },
+    ]);
+    query.exec((err, players) => {
+        if (err) res.send(err);
+        else {
+            res.send(players);
+        }
+    });
+})
+
 app.listen(port, () => {
   console.log(`server is listening on port ${port}`);
 });
 
 function findAverage(fed) {
-  const dob = fed.players.map((strDate) => {
-    if (strDate) {
-      const date = new Date(strDate);
-      return Date.now() - date;
-    }
-    return 0;
-  });
+    let playersWithBday = 0;
+    const dob = fed.players.map((strDate) => {
+        if (strDate) {
+          const date = new Date(strDate);
+          playersWithBday++;
+          return Date.now() - date;
+        }
+        return 0;
+    });
 
-  const sum = dob.reduce((a, b) => a + b);
-  const avg = sum / dob.length;
-  const millisecondsInOneYear = 365*24*60*60*60
-//   return [mapping[fed._id], +(avg / 31536000000).toFixed(2)];
-  return +(avg / millisecondsInOneYear).toFixed(2);
+    const sum = dob.reduce((a, b) => a + b);
+    const avg = sum / playersWithBday;
+    const millisecondsInOneYear = 365 * 24 * 60 * 60 * 1000;
+    //   return [mapping[fed._id], +(avg / 31536000000).toFixed(2)];
+    return [ REGION_MAP[fed._id], +(avg / millisecondsInOneYear).toFixed(2) ];
 }
