@@ -32,11 +32,13 @@ class Table extends Component {
 
     render() {
         const getId = genId();
-        const columns = [{
-            Header: '#',
-            id: 'id',
-            accessor: p => getId.next().value
-        }, {
+        const columns = [
+            // {
+            //     Header: '#',
+            //     id: 'id',
+            //     accessor: p => getId.next().value
+            // }
+        {
             Header: 'Name',
             id: 'name',
             accessor: p => `${p.lastName} ${p.firstName}`,
@@ -71,7 +73,7 @@ class Table extends Component {
                     onChange={e => this.getData(+e.target.value)}
                 />
                 <ReactTable
-                    //pivotBy={['fed']}
+                    pivotBy={['fed']}
                     className="-striped"
                     data={this.state.players}
                     columns={columns}
