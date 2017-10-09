@@ -1,6 +1,6 @@
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
-import React, { Component } from 'react'
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
+import React, { Component } from 'react';
 import R from 'ramda';
 
 class Table extends Component {
@@ -10,23 +10,24 @@ class Table extends Component {
             players: [],
             limit: null
         };
-        this.getData = this.getData.bind(this)
+        this.getData = this.getData.bind(this);
     }
 
     componentDidMount() {
-        this.getData()
+        this.getData();
     }
 
-    getData(limit='') {
+    getData(limit=4) {
         fetch(`http://localhost:3000/?limit=${limit}`)
             .then(res => res.json())
-            .then(players => this.setState({ players }))
+            .then(players => this.setState({ players }));
     }
 
     render() {
         const columns = [{
             Header: 'Name',
-            accessor: 'lastName',
+            id: 'name',
+            accessor: p => `${p.lastName} ${p.firstName}`,
             aggregate: R.always('')
         }, {
             Header: 'Rating',
@@ -42,6 +43,7 @@ class Table extends Component {
             id: 'birth',
             aggregate: birthdays => new Date(R.mean(birthdays.map(b => new Date(b).getTime()))).toDateString(),
             accessor: p => new Date(p.dob).toDateString(),
+            sortMethod: (a, b) => new Date(a).getTime() < new Date(b).getTime() ? 1 : -1
 
         }, {
             Header: 'Federation',
@@ -64,9 +66,9 @@ class Table extends Component {
                     //     console.log(args)
                     // }}
                 />
-            </div>)
+            </div>);
 
     }
 }
 
-export default Table
+export default Table;
