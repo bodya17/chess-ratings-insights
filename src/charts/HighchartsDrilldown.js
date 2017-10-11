@@ -32,7 +32,7 @@ class HighchartsDrilldown extends Component {
                 }
             },
             series: [{
-                name: 'Brands',
+                name: 'Всі гравці',
                 colorByPoint: true,
                 data: this.props.series
             }],

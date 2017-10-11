@@ -22,14 +22,14 @@ class Chart extends Component {
             },
             yAxis: {
                 title: {
-                    text: 'Гравців'
+                    text: 'Вік'
                 }
             },
             title: {
                 text: 'Середній вік гравців в кожній області'
             },
             series: [{
-                name: 'Гравців',
+                name: 'Вік',
                 data,
                 tooltip: {
                     valueDecimals: 0
@@ -48,7 +48,7 @@ class Chart extends Component {
 
     render() {
         return (
-            <ReactChart config={this.getConfig(this.state.data)}></ReactChart>
+            <ReactChart config={this.getConfig(this.state.data)} />
         );
     }
 }
