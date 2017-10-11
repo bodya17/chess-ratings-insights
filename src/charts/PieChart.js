@@ -1,65 +1,36 @@
 import React, { Component } from 'react';
-import ReactChart from 'react-highcharts';
-import Highcharts from 'highcharts';
-
-const getConfig = (data) => ({
-    chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie'
-    },
-    title: {
-        text: 'Розподіл гравців по областях'
-    },
-    tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
-    },
-    plotOptions: {
-        pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-                enabled: true,
-                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                style: {
-                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                }
-            }
-        }
-    },
-    series: [{
-        name: 'Brands',
-        colorByPoint: true,
-        data
-    }]
-})
-
+import baseURL from '../baseURL';
+import HighchartsDrilldown from './HighchartsDrilldown';
 
 class Pie extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: []
+            data: {
+                series: [],
+                drilldown: []
+            }
         };
     }
 
     componentDidMount() {
-        fetch('http://localhost:3000/count')
+        fetch(`${baseURL}/count-for-pie-chart-with-drilldown`)
             .then(res => res.json())
             .then(data => {
-                this.setState({
-                    data: data.map(d => ({
-                        name: d[0], y: d[1]
-                    }))
-                })
+                this.setState({ data })
             })
     }
 
     render() {
+        const chart = this.state.data.series.length > 0 ? <HighchartsDrilldown
+            series={this.state.data.series}
+            drilldown={this.state.data.drilldown}
+
+        /> : null;
         return (
-            <ReactChart config={getConfig(this.state.data)} />
-        );
+            <div>
+                {chart}
+            </div>);
     }
 }
 

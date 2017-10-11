@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactChart from 'react-highcharts';
+import baseURL from '../baseURL';
 
 class Chart extends Component {
 
@@ -38,7 +39,7 @@ class Chart extends Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:3000/average-age')
+        fetch(`${baseURL}/average-age`)
             .then(res => res.json())
             .then(data => {
                 this.setState({data})
