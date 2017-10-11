@@ -5,6 +5,7 @@ const averageAgeController = require('./controllers/averageAge');
 const countController = require('./controllers/count');
 const countForPieChartWithDrilldown = require('./controllers/count-for-pie-chart-with-drilldown');
 const getPlayersController = require('./controllers/getPlayers');
+const searchUserController = require('./controllers/searchUser');
 
 const port = 3004;
 
@@ -19,6 +20,8 @@ app.get('/', getPlayersController);
 app.get('/count', countController);
 
 app.get('/count-for-pie-chart-with-drilldown', countForPieChartWithDrilldown);
+
+app.get('/user/:searchQuery', searchUserController);
 
 app.listen(port, () => {
   console.log(`server is listening on port ${port}`);
