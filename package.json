@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "highcharts": "^6.0.1",
+    "prop-types": "^15.6.0",
     "ramda": "^0.24.1",
     "react": "^16.0.0",
     "react-bootstrap": "^0.31.3",

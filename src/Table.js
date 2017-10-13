@@ -2,20 +2,16 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import React, { Component } from 'react';
 import R from 'ramda';
-
-function *genId() {
-    let id = 1;
-    while(1) {
-        yield id++;
-    }
-}
+import Search from './Search';
+import baseURL from './baseURL';
 
 class Table extends Component {
     constructor(props) {
         super(props);
         this.state = {
             players: [],
-            limit: null
+            query: ''
+            // limit: null
         };
         this.getData = this.getData.bind(this);
     }
@@ -24,21 +20,23 @@ class Table extends Component {
         this.getData();
     }
 
-    getData(limit=4) {
-        fetch(`http://localhost:3000/?limit=${limit}`)
+    // getData(limit) {
+    //     fetch(`http://localhost:3000/?limit=${limit}`)
+    //         .then(res => res.json())
+    //         .then(players => this.setState({players}));
+    // }
+
+    getData(query) {
+        fetch(`${baseURL}/user/${query}`)
             .then(res => res.json())
-            .then(players => this.setState({players}));
+            .then(players => {
+                console.log(players)
+                this.setState({players})
+            })
     }
 
     render() {
-        const getId = genId();
-        const columns = [
-            // {
-            //     Header: '#',
-            //     id: 'id',
-            //     accessor: p => getId.next().value
-            // }
-        {
+        const columns = [{
             Header: 'Name',
             id: 'name',
             accessor: p => `${p.lastName} ${p.firstName}`,
@@ -66,21 +64,13 @@ class Table extends Component {
 
         return (
             <div>
-                <input
-                    style={{margin: '10px'}}
-                    type="text"
-                    placeholder="limit"
-                    onChange={e => this.getData(+e.target.value)}
-                />
+                <Search onChange={(e) => this.getData(e.target.value )} />
                 <ReactTable
-                    pivotBy={['fed']}
+                    //pivotBy={['fed']}
                     className="-striped"
                     data={this.state.players}
                     columns={columns}
                     collapseOnSortingChange={false}
-                    // defaultSortMethod={(...args) => {
-                    //     console.log(args)
-                    // }}
                 />
             </div>);
 

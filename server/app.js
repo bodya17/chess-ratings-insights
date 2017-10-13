@@ -21,7 +21,7 @@ app.get('/count', countController);
 
 app.get('/count-for-pie-chart-with-drilldown', countForPieChartWithDrilldown);
 
-app.get('/user/:searchQuery', searchUserController);
+app.get('/user/:searchQuery?', searchUserController);
 
 app.listen(port, () => {
   console.log(`server is listening on port ${port}`);
